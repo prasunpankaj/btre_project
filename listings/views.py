@@ -3,6 +3,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from .models import Listing
 from realtors.models import Realtor
 from listings.choices import price_choices, bedroom_choices, state_choices
+import pdb;
 
 # Create your views here.
 def index(request):
@@ -30,10 +31,20 @@ def listing(request, listing_id):
 def search(request):
 
     queryset_list = Listing.objects.order_by('-list_date')
+
+    #Keyword for search Checking and Query:
+
+    if 'keywords' in request.GET:
+        keywords = request.GET['keywords']
+        if keywords:
+            queryset_list = queryset_list.filter(description__icontains=keywords)
     context = {
         'state_choices': state_choices,
         'bedroom_choices': bedroom_choices,
         'price_choices': price_choices,
         'listings': queryset_list
     }
+
+    #pdb.set_trace()
+
     return render(request, 'listings/search.html', context)
