@@ -33,11 +33,37 @@ def search(request):
     queryset_list = Listing.objects.order_by('-list_date')
 
     #Keyword for search Checking and Query:
-
     if 'keywords' in request.GET:
         keywords = request.GET['keywords']
         if keywords:
             queryset_list = queryset_list.filter(description__icontains=keywords)
+
+    #City for search Checking and Query:
+    if 'city' in request.GET:
+        city = request.GET['city']
+        if city:
+            queryset_list = queryset_list.filter(city__iexact=city)
+            #queryset_list = queryset_list.filter(city__icontains=city)
+
+    #state for search Checking and Query:
+    if 'state' in request.GET:
+        state = request.GET['state']
+        if state:
+            queryset_list = queryset_list.filter(state__iexact=state)
+    
+    #Bedroom for search Checking and Query:
+    if 'bedrooms' in request.GET:
+        bedrooms = request.GET['bedrooms']
+        if bedrooms:
+            queryset_list = queryset_list.filter(bedrooms__lte=bedrooms)
+
+    #Bedroom for search Checking and Query:
+    if 'price' in request.GET:
+        price = request.GET['price']
+        if price:
+            queryset_list = queryset_list.filter(price__lte=price)
+
+
     context = {
         'state_choices': state_choices,
         'bedroom_choices': bedroom_choices,
@@ -45,6 +71,6 @@ def search(request):
         'listings': queryset_list
     }
 
-    #pdb.set_trace()
+  #  pdb.set_trace()
 
     return render(request, 'listings/search.html', context)
